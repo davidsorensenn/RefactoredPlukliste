@@ -1,36 +1,30 @@
-﻿namespace Plukliste;
-public class Pluklist
+﻿namespace Plukliste
 {
-    public string? Name;
-    public string? Forsendelse;
-    public string? Adresse;
-    public bool IsValid => Validate();
-    public List<Item> Lines = new List<Item>();
-    public void AddItem(Item item) { Lines.Add(item); }
-    public bool Validate()
+    public class Pluklist
     {
-        bool valid = true;
-
-        if (this.Lines == null || this.Lines.Count == 0)
+        public string? Name;
+        public string? Forsendelse;
+        public string? Adresse;
+        public bool IsValid => Validate();
+        public List<Item> Lines = new List<Item>();
+        public void AddItem(Item item) { Lines.Add(item); }
+        public bool Validate()
         {
-            valid = false;
+            bool valid = true;
+
+            if (this.Lines == null || this.Lines.Count == 0)
+            {
+                valid = false;
+            }
+            return valid;
         }
-        return valid;
     }
+
 }
 
-public class Item
-{
-    public string ProductID;
-    public string Title;
-    public ItemType Type;
-    public int Amount;
-}
 
-public enum ItemType
-{
-    Fysisk, Print
-}
+
+
 
 
 
