@@ -1,4 +1,5 @@
 ﻿//Eksempel på funktionel kodning hvor der kun bliver brugt et model lag
+using System;
 using System.Drawing;
 using System.IO;
 using System.IO.Enumeration;
@@ -19,21 +20,28 @@ namespace Plukliste
             xmlFiles.ImportFiles();
             while (readKey != 'Q')
             {
+                try
+                {
                 xmlFiles.DisplayOneFile(CurrentFileIndex);
                 PrintOperationOptions(CurrentFileIndex, xmlFiles.Files);
-                PerformOperation(xmlFiles.Pluklists[CurrentFileIndex]);
+                PerformOperation(xmlFiles.Pluklists[CurrentFileIndex], xmlFiles);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e);
+                    break;
+                }
             }
         }
-        public static void PerformOperation(Pluklist pluklist)
+        public static void PerformOperation(Pluklist pluklist, Xml xmlFiles)
         {
             readKey = Console.ReadKey().KeyChar;
-            if (readKey >= 'a') readKey -= (char)('a' - 'A'); //HACK: To upper
+            if (readKey >= 'a') readKey -= (char)('a' - 'A'); 
             Console.Clear();
 
-            Console.ForegroundColor = ConsoleColor.Red; //status in red
+            Console.ForegroundColor = ConsoleColor.Red;
 
-            Xml xmlFiles = new("filesToImport", "export");
-            xmlFiles.ImportFiles();
+            
             
             switch (readKey)
             {
@@ -49,10 +57,7 @@ namespace Plukliste
                     break;
                 case 'A':
                     //Move files to import directory
-                    var filewithoutPath = xmlFiles.Files[CurrentFileIndex].Substring(xmlFiles.Files[CurrentFileIndex].LastIndexOf('\\'));
-                    System.IO.File.Move(xmlFiles.Files[CurrentFileIndex], string.Format(@"filesToImport\\{0}", filewithoutPath));
-                    Console.WriteLine($"Plukseddel {xmlFiles.Files[CurrentFileIndex]} afsluttet.");
-                    xmlFiles.Files.Remove(xmlFiles.Files[CurrentFileIndex]);
+                    xmlFiles.ExportFiles(CurrentFileIndex);
                     if (CurrentFileIndex == xmlFiles.Files.Count) CurrentFileIndex--;
                     break;
                 case 'P':

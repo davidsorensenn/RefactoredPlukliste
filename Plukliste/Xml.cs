@@ -14,11 +14,13 @@ namespace Plukliste
         //constructor
         public Xml(string importPath, string exportPath) : base(importPath, exportPath)
         {
-            Directory.CreateDirectory("export");
+            Directory.CreateDirectory(exportPath);
+            
         }
         
         //fields
         public List<Pluklist> Pluklists = new List<Pluklist>();
+        
 
         //methods
         //Extends the base class method and convert the files to objects
@@ -41,9 +43,31 @@ namespace Plukliste
                         
                         var pluklist = (Pluklist?)serializer.Deserialize(fileStream);
                         Pluklists.Add(pluklist);
+                        //TODO: this donsn't delete the file. only the variables.
+                        //the files should be deleated from Import 
                     } 
                 }
             }
+        }
+        public void ExportFiles(int index)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(Pluklist));
+            var xmdToExport = "";
+            using (StringWriter stringWriter = new())
+            {
+                using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter))
+                {
+                    serializer.Serialize(xmlWriter, Pluklists[index]);
+                    xmdToExport = stringWriter.ToString();
+                }
+                
+            }
+            string path = Path.Combine(ExportPath, $"{Pluklists[index].Name}.xml");
+            string xml = xmdToExport;
+            File.WriteAllText(path, xml);
+            Console.WriteLine("File moved to {0}", Path.Combine(Environment.CurrentDirectory, ExportPath, $"{Pluklists[index].Name}.xml"));
+            Pluklists.RemoveAt(index);
+            Files.RemoveAt(index);
         }
         public bool validate()
         {
