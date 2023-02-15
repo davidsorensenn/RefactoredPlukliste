@@ -12,5 +12,9 @@ namespace Plukliste
         public string Title;
         public ItemType Type;
         public int Amount;
+        public string ToString()
+        {
+            return $"<tr><td>{Title}</td><td>{Amount}</td></tr>";
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿//Eksempel på funktionel kodning hvor der kun bliver brugt et model lag
 using System.Drawing;
 using System.IO;
+using System.IO.Enumeration;
 using System.Text.RegularExpressions;
 using static System.Net.WebRequestMethods;
 
@@ -15,10 +16,11 @@ namespace Plukliste
         static void Main()
         {
             ColorToStandard();
-            Directory.CreateDirectory("import");
+            Directory.CreateDirectory("export");
+            Directory.CreateDirectory("letter");
 
-            
-            if (!Directory.Exists("export"))
+
+            if (!Directory.Exists("filesToImport"))
             {
                 Console.WriteLine("Directory \"export\" not found");
                 Console.ReadLine();
@@ -27,7 +29,7 @@ namespace Plukliste
 
             files = ReadFiles();
 
-            
+
             while (readKey != 'Q')
             {
 
@@ -45,10 +47,10 @@ namespace Plukliste
                     PrintPluklistDetails(plukliste);
                 }
                 PrintOperationOptions(CurrentFileIndex, files);
-                PerformOperation();
+                PerformOperation(plukliste);
             }
         }
-        public static void PerformOperation()
+        public static void PerformOperation(Pluklist pluklist)
         {
             readKey = Console.ReadKey().KeyChar;
             if (readKey >= 'a') readKey -= (char)('a' - 'A'); //HACK: To upper
@@ -71,10 +73,17 @@ namespace Plukliste
                 case 'A':
                     //Move files to import directory
                     var filewithoutPath = files[CurrentFileIndex].Substring(files[CurrentFileIndex].LastIndexOf('\\'));
-                    System.IO.File.Move(files[CurrentFileIndex], string.Format(@"import\\{0}", filewithoutPath));
+                    System.IO.File.Move(files[CurrentFileIndex], string.Format(@"filesToImport\\{0}", filewithoutPath));
                     Console.WriteLine($"Plukseddel {files[CurrentFileIndex]} afsluttet.");
                     files.Remove(files[CurrentFileIndex]);
                     if (CurrentFileIndex == files.Count) CurrentFileIndex--;
+                    break;
+                case 'R':
+                    //Move files to import directory
+                    FileHandler fileHandler = new FileHandler("templates", "letters");
+
+                    PrintLetter(pluklist, fileHandler, 2);
+                    
                     break;
             }
             Console.ForegroundColor = ConsoleColor.White;
@@ -94,7 +103,7 @@ namespace Plukliste
         }
         public static List<string>? ReadFiles()
         {
-            files = Directory.EnumerateFiles("export").ToList();
+            files = Directory.EnumerateFiles("filesToImport").ToList();
             if (files.Count == 0)
             {
                 Console.WriteLine("No files found.");
@@ -162,6 +171,19 @@ namespace Plukliste
             ColorToStandard();
             Console.WriteLine(message);
         }
+        public static void PrintLetter(Pluklist pluklist, FileHandler fileHandler, int type)
+        {
+            //Arange
+            fileHandler.Pluklist = pluklist;
+            
+           
+            //act
+            fileHandler.ImportFiles();
+            fileHandler.UpdateFiles();
+            fileHandler.ExportFiles(2);
+            Console.WriteLine("File was added to path \\letter");
+        }
+
     }
 }
 
