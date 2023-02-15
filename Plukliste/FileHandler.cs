@@ -103,6 +103,8 @@ namespace Plukliste
             string path = Path.Combine("letter", $"{Pluklist.Name}.html");
             string html = Files[type];
             File.WriteAllText(path, html);
+            Console.WriteLine("File was added to {0}", Path.Combine(Environment.CurrentDirectory, path));
+
         }
     }
 }

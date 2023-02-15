@@ -78,7 +78,7 @@ namespace Plukliste
                     files.Remove(files[CurrentFileIndex]);
                     if (CurrentFileIndex == files.Count) CurrentFileIndex--;
                     break;
-                case 'R':
+                case 'P':
                     //Move files to import directory
                     FileHandler fileHandler = new FileHandler("templates", "letters");
 
@@ -143,6 +143,7 @@ namespace Plukliste
             if (CurrentFileIndex >= 0)
             {
                 PrintOption("A", "fslut plukseddel");
+                PrintOption("P", "rint ordrebekræftelse");
             }
             if (CurrentFileIndex > 0)
             {
@@ -181,7 +182,6 @@ namespace Plukliste
             fileHandler.ImportFiles();
             fileHandler.UpdateFiles();
             fileHandler.ExportFiles(2);
-            Console.WriteLine("File was added to path \\letter");
         }
 
     }
