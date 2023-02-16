@@ -21,12 +21,13 @@ namespace Plukliste
         public string? ImportPath { get; set; }
         public string? ExportPath { get; set; }
         public List<string> Files { get; set; }
+
         public bool IsValid => Validate();
 
         //methods
         public bool Validate()
         {
-            
+
             if (string.IsNullOrEmpty(ImportPath))
             {
                 Console.WriteLine("Import path not set");
@@ -57,8 +58,29 @@ namespace Plukliste
                     Files.Add(file);
                 }
             }
+        }
+        public void ImportFactory()
+        {
+            if (!this.IsValid)
+            {
+                return;
+            }
+            foreach (var file in Files)
+            {
+                if (file.Substring(file.LastIndexOf(".")) == ".html")
+                {
+
+                }
+                if (file.Substring(file.LastIndexOf(".")) == ".xml")
+                {
+
+                }
+                if (file.Substring(file.LastIndexOf(".")) == ".csv")
+                {
+
+                }
+            }
 
         }
-        
     }
 }

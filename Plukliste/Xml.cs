@@ -15,12 +15,12 @@ namespace Plukliste
         public Xml(string importPath, string exportPath) : base(importPath, exportPath)
         {
             Directory.CreateDirectory(exportPath);
-            
+
         }
-        
+
         //fields
         public List<Pluklist> Pluklists = new List<Pluklist>();
-        
+
 
         //methods
         //Extends the base class method and convert the files to objects
@@ -40,35 +40,25 @@ namespace Plukliste
                     using (FileStream fileStream = File.OpenRead(fileName))
                     {
                         XmlSerializer serializer = new XmlSerializer(typeof(Pluklist));
-                        
+
                         var pluklist = (Pluklist?)serializer.Deserialize(fileStream);
                         Pluklists.Add(pluklist);
-                       
-                    } 
+
+                    }
                 }
             }
         }
         public void ExportFiles(int index)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(Pluklist));
-            var xmdToExport = "";
-            using (StringWriter stringWriter = new())
-            {
-                using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter))
-                {
-                    serializer.Serialize(xmlWriter, Pluklists[index]);
-                    xmdToExport = stringWriter.ToString();
-                }
-            }
-            //var fileName = Files[index].Substring(Files[index].LastIndexOf('\\')+1);
+
+
             var fileName = Files[index];
             fileName.Substring(1);
-            
-            string exportPath = Path.Combine(Environment.CurrentDirectory, ExportPath, fileName.Substring(fileName.LastIndexOf("\\")+1));
-            
 
-            //string xml = xmdToExport;
-            //File.WriteAllText(path, xml);
+            string exportPath = Path.Combine(Environment.CurrentDirectory, ExportPath, fileName.Substring(fileName.LastIndexOf("\\") + 1));
+
+
+
             File.Move(fileName, exportPath);
             Console.WriteLine("File moved to {0}", Path.Combine(Environment.CurrentDirectory, ExportPath, $"{Pluklists[index].Name}.xml"));
             Pluklists.RemoveAt(index);
@@ -98,7 +88,7 @@ namespace Plukliste
         }
         public void DisplayOneFile(int index)
         {
-            
+
             if (!this.IsValid)
             {
                 return;
@@ -125,5 +115,45 @@ namespace Plukliste
         }
 
 
+    }
+
+    interface IImportFile
+    {
+        List<Pluklist> Read(string path);
+    }
+
+    class ImportXML : IImportFile
+    {
+        public List<Pluklist> Read(string path)
+        {
+            //code that reads and return public Pluklist Read(string path)
+            List<Pluklist> list = new List<Pluklist>();
+
+            List<string> filesNames = Directory.EnumerateFiles(path).ToList();
+            if (filesNames.Count == 0)
+            {
+                Console.WriteLine("Folder is empty.");
+                return null;
+            }
+            foreach (var fileName in filesNames)
+            {
+
+                using (FileStream fileStream = File.OpenRead(fileName))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(Pluklist));
+                    var pluklist = (Pluklist?)serializer.Deserialize(fileStream);
+                    list.Add(pluklist);
+                }
+            }
+            return list;
+        }
+    }
+
+    class ImportCSV : IImportFile
+    {
+        public List<Pluklist> Read(string path)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
