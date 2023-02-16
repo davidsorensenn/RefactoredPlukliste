@@ -43,8 +43,7 @@ namespace Plukliste
                         
                         var pluklist = (Pluklist?)serializer.Deserialize(fileStream);
                         Pluklists.Add(pluklist);
-                        //TODO: this donsn't delete the file. only the variables.
-                        //the files should be deleated from Import 
+                       
                     } 
                 }
             }
@@ -60,14 +59,22 @@ namespace Plukliste
                     serializer.Serialize(xmlWriter, Pluklists[index]);
                     xmdToExport = stringWriter.ToString();
                 }
-                
             }
-            string path = Path.Combine(ExportPath, $"{Pluklists[index].Name}.xml");
-            string xml = xmdToExport;
-            File.WriteAllText(path, xml);
+            //var fileName = Files[index].Substring(Files[index].LastIndexOf('\\')+1);
+            var fileName = Files[index];
+            fileName.Substring(1);
+            
+            string exportPath = Path.Combine(Environment.CurrentDirectory, ExportPath, fileName.Substring(fileName.LastIndexOf("\\")+1));
+            
+
+            //string xml = xmdToExport;
+            //File.WriteAllText(path, xml);
+            File.Move(fileName, exportPath);
             Console.WriteLine("File moved to {0}", Path.Combine(Environment.CurrentDirectory, ExportPath, $"{Pluklists[index].Name}.xml"));
             Pluklists.RemoveAt(index);
             Files.RemoveAt(index);
+            //TODO: this donsn't delete the file. only the variables.
+            //the files should be deleated from Import 
         }
         public bool validate()
         {

@@ -40,9 +40,6 @@ namespace Plukliste
             Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.Red;
-
-            
-            
             switch (readKey)
             {
                 case 'G':
@@ -74,7 +71,6 @@ namespace Plukliste
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("\n\nOptions:");
             PrintOption("Q", "uit");
-
             if (CurrentFileIndex >= 0)
             {
                 PrintOption("A", "fslut plukseddel");
