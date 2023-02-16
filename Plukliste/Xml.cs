@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using System.Xml;
 
 namespace Plukliste
@@ -21,7 +20,6 @@ namespace Plukliste
         //fields
         public List<Pluklist> Pluklists = new List<Pluklist>();
 
-
         //methods
         //Extends the base class method and convert the files to objects
         public override void ImportFiles()
@@ -37,15 +35,22 @@ namespace Plukliste
                 foreach (var fileName in filesNames)
                 {
                     Files.Add(fileName);
-                    using (FileStream fileStream = File.OpenRead(fileName))
-                    {
-                        XmlSerializer serializer = new XmlSerializer(typeof(Pluklist));
-
-                        var pluklist = (Pluklist?)serializer.Deserialize(fileStream);
-                        Pluklists.Add(pluklist);
-
-                    }
+                    IImportFile impoter = GetFileImporter(fileName);
+                    Pluklists.Add(impoter.Read(fileName));
                 }
+            }
+        }
+
+        private IImportFile GetFileImporter(string filename)
+        {
+            switch (Path.GetExtension(filename).ToLower())
+            {
+                case ".xml":
+                    return new ImportXML();
+                case ".csv":
+                    return new ImportCSV();
+                default:
+                    throw new Exception("Unknown file type");
             }
         }
         public void ExportFiles(int index)
@@ -115,45 +120,5 @@ namespace Plukliste
         }
 
 
-    }
-
-    interface IImportFile
-    {
-        List<Pluklist> Read(string path);
-    }
-
-    class ImportXML : IImportFile
-    {
-        public List<Pluklist> Read(string path)
-        {
-            //code that reads and return public Pluklist Read(string path)
-            List<Pluklist> list = new List<Pluklist>();
-
-            List<string> filesNames = Directory.EnumerateFiles(path).ToList();
-            if (filesNames.Count == 0)
-            {
-                Console.WriteLine("Folder is empty.");
-                return null;
-            }
-            foreach (var fileName in filesNames)
-            {
-
-                using (FileStream fileStream = File.OpenRead(fileName))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(Pluklist));
-                    var pluklist = (Pluklist?)serializer.Deserialize(fileStream);
-                    list.Add(pluklist);
-                }
-            }
-            return list;
-        }
-    }
-
-    class ImportCSV : IImportFile
-    {
-        public List<Pluklist> Read(string path)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
