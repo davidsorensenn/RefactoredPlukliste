@@ -8,10 +8,10 @@ using System.Xml;
 
 namespace Plukliste
 {
-    public class Xml : FileHandler
+    public class Files : FileHandler
     {
         //constructor
-        public Xml(string importPath, string exportPath) : base(importPath, exportPath)
+        public Files(string importPath, string exportPath) : base(importPath, exportPath)
         {
             Directory.CreateDirectory(exportPath);
 

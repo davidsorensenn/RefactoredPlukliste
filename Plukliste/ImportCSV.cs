@@ -9,7 +9,12 @@ namespace Plukliste
         {
         Pluklist pluklist = new();
             pluklist.Adresse = "Pickup";
-            pluklist.Name = path.Substring(path.IndexOf("_") + 1);
+           
+           string name = path.Substring(path.IndexOf("_") + 1);
+           name = name.Substring(0, name.IndexOf("."));
+           name = name.Replace("_", " ");
+            pluklist.Name = name;
+           pluklist.Forsendelse = "Pickup";    
 
             List<string> data = File.ReadAllLines(path).ToList();
             data.RemoveAt(0);
@@ -25,7 +30,5 @@ namespace Plukliste
             }
             return pluklist;
         }
-
     }
-    
 }

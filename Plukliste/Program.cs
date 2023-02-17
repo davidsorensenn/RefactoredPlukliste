@@ -17,7 +17,7 @@ namespace Plukliste
         static void Main()
         {
            
-            Xml xmlFiles = new("filesToImport", "export");
+            Files xmlFiles = new("filesToImport", "export");
             xmlFiles.ImportFiles();
             while (readKey != 'Q')
             {
@@ -34,7 +34,7 @@ namespace Plukliste
                 }
             }
         }
-        public static void PerformOperation(Pluklist pluklist, Xml xmlFiles)
+        public static void PerformOperation(Pluklist pluklist, Files xmlFiles)
         {
             readKey = Console.ReadKey().KeyChar;
             if (readKey >= 'a') readKey -= (char)('a' - 'A'); 
